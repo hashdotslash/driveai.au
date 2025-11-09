@@ -1,0 +1,74 @@
+generator client { provider = "prisma-client-js" }
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  name      String?
+  email     String   @unique
+  password  String?
+  image     String?
+  role      Role     @default(USER)
+  credits   Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  vehicles  Vehicle[]
+  aiLogs    AIListing[]
+}
+
+enum Role { USER SELLER ADMIN }
+
+model Vehicle {
+  id           String   @id @default(cuid())
+  seller       User     @relation(fields: [sellerId], references: [id])
+  sellerId     String
+  title        String
+  make         String
+  model        String
+  year         Int
+  price        Int
+  condition    String
+  location     String
+  odometerKm   Int
+  batteryKWh   Int
+  estRangeKm   Int
+  chargerType  String
+  description  String
+  status       String   @default("PENDING")
+  batteryHealthPct Int?
+  dcFastKW     Int?
+  acOnboardKW  Int?
+  warrantyYears Int?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  photos       VehiclePhoto[]
+  enquiries    Enquiry[]
+}
+
+model VehiclePhoto {
+  id        String   @id @default(cuid())
+  vehicle   Vehicle  @relation(fields: [vehicleId], references: [id])
+  vehicleId String
+  url       String
+  createdAt DateTime @default(now())
+}
+
+model Enquiry {
+  id         String   @id @default(cuid())
+  vehicle    Vehicle  @relation(fields: [vehicleId], references: [id])
+  vehicleId  String
+  buyerEmail String
+  message    String
+  createdAt  DateTime @default(now())
+}
+
+model AIListing {
+  id        String   @id @default(cuid())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  rawJson   Json
+  createdAt DateTime @default(now())
+}
