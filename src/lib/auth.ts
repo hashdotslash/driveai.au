@@ -15,7 +15,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           where: { email: c.email as string },
         });
         if (!user || !user.password) return null;
-        const ok = await compare(c.password, user.password);
+        const ok = await compare(c.password as string, user.password as string);
         return ok ? { id: user.id, email: user.email, name: user.name, role: user.role } as any : null;
       }
     }),
