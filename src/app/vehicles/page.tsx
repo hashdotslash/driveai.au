@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { Prisma } from "@prisma/client";
 import Link from "next/link";
 export const dynamic = "force-dynamic";
 export default async function VehiclesPage({ searchParams }: { searchParams: Record<string,string|undefined> }) {
@@ -13,9 +14,12 @@ export default async function VehiclesPage({ searchParams }: { searchParams: Rec
   if (chargerType) where.chargerType = { contains: chargerType, mode: "insensitive" };
   if (minRange) where.estRangeKm = { gte: minRange };
   if (minPrice || maxPrice) where.price = {}; if (minPrice) where.price.gte = minPrice; if (maxPrice) where.price.lte = maxPrice;
-  const orderBy = sort === "price-asc" ? { price: "asc" } :
-    sort === "price-desc" ? { price: "desc" } :
-    sort === "range-desc" ? { estRangeKm: "desc" } : { createdAt: "desc" };
+  const orderBy: Prisma.VehicleOrderByWithRelationInput =
+    sort === "price-desc"
+      ? { price: "desc" }
+      : sort === "range-desc"
+        ? { estRangeKm: "desc" }
+        : { createdAt: "desc" };
   const vehicles = await prisma.vehicle.findMany({ where, orderBy, include: { photos: true } });
   return (
     <div className="space-y-6">
