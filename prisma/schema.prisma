@@ -19,33 +19,37 @@ model User {
   aiLogs    AIListing[]
 }
 
-enum Role { USER SELLER ADMIN }
+enum Role {
+  USER
+  SELLER
+  ADMIN
+}
 
 model Vehicle {
-  id           String   @id @default(cuid())
-  seller       User     @relation(fields: [sellerId], references: [id])
-  sellerId     String
-  title        String
-  make         String
-  model        String
-  year         Int
-  price        Int
-  condition    String
-  location     String
-  odometerKm   Int
-  batteryKWh   Int
-  estRangeKm   Int
-  chargerType  String
-  description  String
-  status       String   @default("PENDING")
+  id              String        @id @default(cuid())
+  seller          User          @relation(fields: [sellerId], references: [id])
+  sellerId        String
+  title           String
+  make            String
+  model           String
+  year            Int
+  price           Int
+  condition       String
+  location        String
+  odometerKm      Int
+  batteryKWh      Int
+  estRangeKm      Int
+  chargerType     String
+  description     String
+  status          String        @default("PENDING")
   batteryHealthPct Int?
-  dcFastKW     Int?
-  acOnboardKW  Int?
-  warrantyYears Int?
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-  photos       VehiclePhoto[]
-  enquiries    Enquiry[]
+  dcFastKW        Int?
+  acOnboardKW     Int?
+  warrantyYears   Int?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  photos          VehiclePhoto[]
+  enquiries       Enquiry[]
 }
 
 model VehiclePhoto {
